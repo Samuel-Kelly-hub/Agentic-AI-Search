@@ -131,6 +131,9 @@ def web_research(state: WebSearchState, config: RunnableConfig) -> OverallState:
     modified_text = insert_citation_markers(response.text, citations)
     sources_gathered = [item for citation in citations for item in citation["segments"]]
 
+    # I deleted a redundant line from the initial commit:
+    #     "search_query": [state["search_query"]]
+    # Which would re-append the search queries to themselves.
     return {
         "sources_gathered": sources_gathered,
         "web_research_result": [modified_text],
@@ -265,6 +268,8 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
         "sources_gathered": unique_sources,
     }
 
+    # I added this node to add some comedic relief to the output and practice building nodes, prompts
+    # and editing the State.
 def joke(state:OverallState, config: RunnableConfig):
     """LangGraph node that creates a joke to add some lighthearted humour to the end of the answer.
     It has access to both the user's search and the final answer.
