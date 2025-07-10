@@ -41,15 +41,7 @@ def chatbot(state: State):
     if state["messages"][-1].name == "deep_research":
         return {}
 
-    # The chatbot evaluates whether the result from tavily is adequate and either passes on the information to the user
-    # or it can call either tavily_search or deep_research to fill the knowledge gap.
-    elif state["messages"][-1].name == "tavily_search":
-        formatted_prompt = tavily_analyse_prompt.format(
-            current_date=datetime.now().strftime("%B %d, %Y"),
-            user_input=user_input,
-            messages=state["messages"],
-            search_result = state["messages"][-1].content,
-        )
+
 
     # If the last message is from the user, the chatbot decides whether to call a tool, or to answer without a tool.
     elif user_input == state["messages"][-1].content:
@@ -59,6 +51,15 @@ def chatbot(state: State):
             messages = state["messages"],
         )
 
+    # The chatbot evaluates whether the result from tavily is adequate and either passes on the information to the user
+    # or it can call either tavily_search or deep_research to fill the knowledge gap.
+    else:
+        formatted_prompt = tavily_analyse_prompt.format(
+            current_date=datetime.now().strftime("%B %d, %Y"),
+            user_input=user_input,
+            messages=state["messages"],
+            search_result = state["messages"][-1].content,
+        )
     message = llm.invoke(formatted_prompt)
     return {"messages": [message]}
 
